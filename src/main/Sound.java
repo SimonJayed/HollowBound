@@ -19,6 +19,15 @@ public class Sound {
             soundURL[1] = getClass().getResource("/sound/AnimalCrossingTalkingSound.wav");
             soundURL[2] = getClass().getResource("/sound/LetterBee-Lag&Niche.wav");
             soundURL[3] = getClass().getResource("/sound/ClickSound.wav");
+            soundURL[4] = getClass().getResource("/sound/EpilogueMusic.wav");
+            soundURL[5] = getClass().getResource("/sound/FirstMap.wav");
+            soundURL[6] = getClass().getResource("/sound/SecondMapMusic.wav");
+            soundURL[7] = getClass().getResource("/sound/GraveyardMusic.wav");
+            soundURL[8] = getClass().getResource("/sound/EnemyApproaching.wav");
+            soundURL[9] = getClass().getResource("/sound/CatCaveMusic.wav");
+            soundURL[10] = getClass().getResource("/sound/VeyraBattleMusic.wav");
+            soundURL[11] = getClass().getResource("/sound/VeyraDomainMusic.wav");
+            soundURL[12] = getClass().getResource("/sound/Vs Susie.wav");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,10 +35,13 @@ public class Sound {
 
     public void setFile(int i){
 
+
         try {
-            if (soundURL[i] == null) {
-                System.out.println("Invalid sound index: " + i);
-                return;
+            if(clip != null && clip.isRunning() || clip != null && clip.isActive()){
+                clip.stop();
+            }
+            if (clip != null) {
+                clip.close();
             }
 
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
@@ -38,7 +50,20 @@ public class Sound {
 
             volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         } catch (Exception e) {
-            e.printStackTrace(); // Print error to debug issues
+            e.printStackTrace();
+        }
+    }
+
+    public void setSoundEffectFile(int i){
+
+        try {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -46,8 +71,8 @@ public class Sound {
         clip.start();
     }
 
-    public void loop(int i){
-        clip.loop(i);
+    public void loop(){
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     public void stop(){

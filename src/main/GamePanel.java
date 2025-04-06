@@ -1,5 +1,6 @@
 package main;
 
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import misc.AssetSetter;
@@ -36,8 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int currentMap = 0;
 
     public double FPS = 60;
-
-    int failCTR = 0;
+    public SaveLoad saveLoad;
 
     public TileManager tileM = new TileManager(this);
     public KeyHandler keyH = new KeyHandler(this);
@@ -62,13 +62,11 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playState = 1;
     public final int dialogueState = 2;
     public final int inventoryState = 3;
-    public final int newGameState = 4;
-    public final int loadGameState = 5;
-    public final int settingsState = 6;
-    public final int characterPickState = 7;
-    public final int battleState = 8;
-    public final int mapState = 9;
-    public final int eventState = 10;
+    public final int loadGameState = 4;
+    public final int characterPickState = 5;
+    public final int battleState = 6;
+    public final int mapState = 7;
+    public final int eventState = 8;
 
     public TitleScreen titleScreen = new TitleScreen(this);
     public CharacterPickScreen pickScreen = new CharacterPickScreen(this);
@@ -85,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        saveLoad = new SaveLoad(this);
     }
 
     public void setupGame(){
@@ -259,7 +258,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void playMusic(int i){
         sound.setFile(i);
         sound.play();
-        sound.loop(i);
+        sound.loop();
     }
     public void stopMusic(){
         sound.stop();
@@ -268,5 +267,4 @@ public class GamePanel extends JPanel implements Runnable {
         sound.setFile(i);
         sound.play();
     }
-
 }

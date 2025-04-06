@@ -79,6 +79,8 @@ public class UI {
             gp.map.addMapInfo();
             drawDescription(gp.screenWidth - 200, gp.tileSize/2,  11);
             playTime += (double) 1 / 60;
+
+
         }
         else if(gp.gameState == gp.inventoryState){
             gp.map.miniMapOn = false;

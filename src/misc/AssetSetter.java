@@ -33,6 +33,12 @@ public class AssetSetter {
                 gp.companion2 = new NPC_Amaryllis(gp);
                 break;
             }
+            default: {
+                gp.player.playing = "fort";
+                gp.companion1 = new NPC_Sylvie(gp);
+                gp.companion2 = new NPC_Amaryllis(gp);
+                break;
+            }
         }
         gp.player.setDefaultValues();
     }

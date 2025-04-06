@@ -5,6 +5,8 @@ import main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
@@ -53,11 +55,17 @@ public class KeyHandler implements KeyListener {
                         gp.ui.startFadeIn();
                         gp.gameState = gp.characterPickState;
                         gp.titleScreen.emptyImages();
-//                    gp.playMusic(2);
                         gp.sound.setVolume(-25.0f);
                     }
                     if (gp.titleScreen.commandNum == 1) {
-
+                        if(gp.player.hasSave) {
+                            gp.saveLoad.load();
+                            gp.gameState = gp.playState;
+                        }
+                        else{
+                            gp.ui.addMessage("No Save File.");
+                            gp.ui.drawMessage(gp.tileSize, gp.tileSize, 35);
+                        }
                     }
                     if (gp.titleScreen.commandNum == 2) {
 
@@ -148,29 +156,29 @@ public class KeyHandler implements KeyListener {
                 if(gp.battleScreen.buffer>10  && !gp.battleScreen.isEnemyTurn){
                     if(!gp.battleScreen.isAttacking && !gp.battleScreen.isChoosingSkill){
                         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                            gp.battleScreen.commandNum--;
-                            if (gp.battleScreen.commandNum < 0) {
-                                gp.battleScreen.commandNum = 3;
+                            gp.battleScreen.battleCommandNum--;
+                            if (gp.battleScreen.battleCommandNum < 0) {
+                                gp.battleScreen.battleCommandNum = 3;
                             }
                             gp.playSoundEffect(3);
                             gp.sound.setVolume(-20.0f);
                         }
                         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                            gp.battleScreen.commandNum++;
-                            if (gp.battleScreen.commandNum > 3) {
-                                gp.battleScreen.commandNum = 0;
+                            gp.battleScreen.battleCommandNum++;
+                            if (gp.battleScreen.battleCommandNum > 3) {
+                                gp.battleScreen.battleCommandNum = 0;
                             }
                             gp.playSoundEffect(3);
                             gp.sound.setVolume(-20.0f);
                         }
                         if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-                            if (gp.battleScreen.commandNum == 0) {
+                            if (gp.battleScreen.battleCommandNum == 0) {
                                 gp.battleScreen.attack();
                             }
-                            if (gp.battleScreen.commandNum == 1) {
+                            if (gp.battleScreen.battleCommandNum == 1) {
                                 gp.battleScreen.skill();
                             }
-                            if (gp.battleScreen.commandNum == 3) {
+                            if (gp.battleScreen.battleCommandNum == 3) {
                                 if(gp.battleScreen.canEscape){
                                     int num = gp.randomize(1, 8);
                                     if(num == 8){
@@ -178,7 +186,7 @@ public class KeyHandler implements KeyListener {
                                         gp.gameState = gp.playState;
                                     }
                                     else {
-                                        gp.battleScreen.commandNum = 0;
+                                        gp.battleScreen.battleCommandNum = 0;
                                         gp.battleScreen.currentTurnFinished = true;
                                         gp.ui.addMessage("Escape Failed");
                                     }
@@ -197,38 +205,38 @@ public class KeyHandler implements KeyListener {
                         if (gp.battleScreen.isPickingAlly) {
                             System.out.println("Picking ALly");
                             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                                gp.battleScreen.commandNum--;
-                                if (gp.battleScreen.commandNum < 0) {
-                                    gp.battleScreen.commandNum = gp.battleScreen.selectableAllies.size() - 1;
+                                gp.battleScreen.battleCommandNum--;
+                                if (gp.battleScreen.battleCommandNum < 0) {
+                                    gp.battleScreen.battleCommandNum = gp.battleScreen.selectableAllies.size() - 1;
                                 }
                                 gp.playSoundEffect(3);
                                 gp.sound.setVolume(-20.0f);
                             }
 
                             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                                gp.battleScreen.commandNum++;
-                                if (gp.battleScreen.commandNum > gp.battleScreen.selectableAllies.size() - 1) {
-                                    gp.battleScreen.commandNum = 0;
+                                gp.battleScreen.battleCommandNum++;
+                                if (gp.battleScreen.battleCommandNum > gp.battleScreen.selectableAllies.size() - 1) {
+                                    gp.battleScreen.battleCommandNum = 0;
                                 }
                                 gp.playSoundEffect(3);
                                 gp.sound.setVolume(-20.0f);
                             }
 
                             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-                                if (gp.battleScreen.commandNum == 0) {
+                                if (gp.battleScreen.battleCommandNum == 0) {
                                     gp.battleScreen.battleQueue.get(gp.battleScreen.currentTurn).useSkill(gp.battleScreen.selectedSkill, gp.battleScreen.selectableAllies.get(0));
                                 }
-                                if (gp.battleScreen.commandNum == 1) {
+                                if (gp.battleScreen.battleCommandNum == 1) {
                                     gp.battleScreen.battleQueue.get(gp.battleScreen.currentTurn).useSkill(gp.battleScreen.selectedSkill, gp.battleScreen.selectableAllies.get(1));
                                 }
-                                if (gp.battleScreen.commandNum == 2) {
+                                if (gp.battleScreen.battleCommandNum == 2) {
                                     gp.battleScreen.battleQueue.get(gp.battleScreen.currentTurn).useSkill(gp.battleScreen.selectedSkill, gp.battleScreen.selectableAllies.get(2));
                                 }
                                 gp.playSoundEffect(3);
                                 gp.sound.setVolume(-20.0f);
                                 gp.battleScreen.isChoosingSkill = false;
                                 gp.battleScreen.currentTurnFinished = true;
-                                gp.battleScreen.commandNum = 0;
+                                gp.battleScreen.battleCommandNum = 0;
                                 gp.battleScreen.selectedSkill = 0;
                             }
 
@@ -239,29 +247,29 @@ public class KeyHandler implements KeyListener {
                         }
                         else{
                             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                                gp.battleScreen.commandNum--;
-                                if (gp.battleScreen.commandNum < 0) {
-                                    gp.battleScreen.commandNum = 2;
+                                gp.battleScreen.battleCommandNum--;
+                                if (gp.battleScreen.battleCommandNum < 0) {
+                                    gp.battleScreen.battleCommandNum = 2;
                                 }
                                 gp.playSoundEffect(3);
                                 gp.sound.setVolume(-20.0f);
                             }
                             if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                                gp.battleScreen.commandNum++;
-                                if (gp.battleScreen.commandNum > 2) {
-                                    gp.battleScreen.commandNum = 0;
+                                gp.battleScreen.battleCommandNum++;
+                                if (gp.battleScreen.battleCommandNum > 2) {
+                                    gp.battleScreen.battleCommandNum = 0;
                                 }
                                 gp.playSoundEffect(3);
                                 gp.sound.setVolume(-20.0f);
                             }
                             if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
-                                if(gp.battleScreen.commandNum == 0){
+                                if(gp.battleScreen.battleCommandNum == 0){
                                     gp.battleScreen.useSkill(0);
                                 }
-                                if(gp.battleScreen.commandNum == 1){
+                                if(gp.battleScreen.battleCommandNum == 1){
                                     gp.battleScreen.useSkill(1);
                                 }
-                                if(gp.battleScreen.commandNum == 2){
+                                if(gp.battleScreen.battleCommandNum == 2){
                                     gp.battleScreen.useSkill(2);
                                 }
                                 gp.playSoundEffect(3);
@@ -270,35 +278,35 @@ public class KeyHandler implements KeyListener {
                         }
                         if(code == KeyEvent.VK_ESCAPE){
                             gp.battleScreen.isChoosingSkill = false;
-                            gp.battleScreen.commandNum = 1;
+                            gp.battleScreen.battleCommandNum = 1;
                         }
 
                     }
                     else if(gp.battleScreen.isAttacking && !gp.battleScreen.isChoosingSkill){
                         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-                            gp.battleScreen.commandNum--;
-                            if (gp.battleScreen.commandNum < 0) {
-                                gp.battleScreen.commandNum = 2;
+                            gp.battleScreen.battleCommandNum--;
+                            if (gp.battleScreen.battleCommandNum < 0) {
+                                gp.battleScreen.battleCommandNum = 2;
                             }
                             gp.playSoundEffect(3);
                             gp.sound.setVolume(-20.0f);
                         }
                         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-                            gp.battleScreen.commandNum++;
-                            if (gp.battleScreen.commandNum > 2) {
-                                gp.battleScreen.commandNum = 0;
+                            gp.battleScreen.battleCommandNum++;
+                            if (gp.battleScreen.battleCommandNum > 2) {
+                                gp.battleScreen.battleCommandNum = 0;
                             }
                             gp.playSoundEffect(3);
                             gp.sound.setVolume(-20.0f);
                         }
                         if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
-                            if(gp.battleScreen.commandNum == 0){
+                            if(gp.battleScreen.battleCommandNum == 0){
                                 gp.battleScreen.playerAttack("HEAD");
                             }
-                            if(gp.battleScreen.commandNum == 1){
+                            if(gp.battleScreen.battleCommandNum == 1){
                                 gp.battleScreen.playerAttack("TORSO");
                             }
-                            if(gp.battleScreen.commandNum == 2){
+                            if(gp.battleScreen.battleCommandNum == 2){
                                 gp.battleScreen.playerAttack("LEGS");
                             }
                             gp.playSoundEffect(3);
@@ -443,10 +451,15 @@ public class KeyHandler implements KeyListener {
 
                         }
                         if(gp.inventoryScreen.commandNum == 3){
-
+                            try {
+                                gp.saveLoad.save();
+                                gp.player.hasSave = true;
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
                         if(gp.inventoryScreen.commandNum == 4){
-
+                            gp.gameState = gp.titleState;
                         }
                     }
 

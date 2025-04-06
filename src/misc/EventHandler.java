@@ -244,6 +244,7 @@ public class EventHandler{
                 if(reqDirection.equals("right")){
                     gp.currentMap = 1;
                 }
+                gp.playMusic(5);
                 break;
             }
             case 1:{
@@ -253,6 +254,7 @@ public class EventHandler{
                     gp.currentMap = 2;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(6);
                 break;
             }
             case 2:{
@@ -265,6 +267,7 @@ public class EventHandler{
                     gp.currentMap = 3;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(5);
                 break;
             }
             case 3:{
@@ -274,6 +277,7 @@ public class EventHandler{
                     gp.currentMap = 5;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(5);
                 break;
             }
             case 4:{
@@ -283,6 +287,7 @@ public class EventHandler{
                     gp.currentMap = 6;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(9);
                 break;
             }
             case 5:{
@@ -292,6 +297,7 @@ public class EventHandler{
                     gp.currentMap = 8;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(7);
                 break;
             }
             case 6:{
@@ -316,6 +322,7 @@ public class EventHandler{
                     gp.currentMap = 9;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(0);
                 break;
             }
             case 9:{
@@ -325,6 +332,7 @@ public class EventHandler{
                     gp.currentMap = 10;
                     System.out.println("Next Map");
                 }
+                gp.playMusic(11);
                 break;
             }
         }

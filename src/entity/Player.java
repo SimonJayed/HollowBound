@@ -16,6 +16,7 @@ public class Player extends Entity{
     public final int screenY;
 
     public int hasKey = 0;
+    public boolean hasSave = false;
 
     public String playing = "";
 
@@ -97,7 +98,7 @@ public class Player extends Entity{
             case "fort":{
                 setName("Fort");
                 getImage("fort");
-                setDefaultValues(1, 100, 50,4, 15, 60, 4, 5,  15);
+                setDefaultValues(1, 100, 50,4, 15, 6, 4, 5,  15);
                 getCombatImages("fort");
                 skills.add(new Skill("Rage Bait", "Taunts the enemy and increases defense for 2 turns.", vit*0.4, 25+maxEnergy*0.2, 3, "BUFF_SELF"));
                 skills.add(new Skill("Meat Shield", "Grants additional defense to an ally for 3 turns.", vit*0.5, 25+maxEnergy*0.4, 3, "BUFF_ALLY"));

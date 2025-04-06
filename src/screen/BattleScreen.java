@@ -27,7 +27,7 @@ public class BattleScreen implements Screen{
     public ArrayList<Entity> selectableAllies = new ArrayList<>();
     public Entity currentEnemy;
     public int currentTurn = 0;
-    public int commandNum = 0;
+    public int battleCommandNum = 0;
     public int selectedSkill = 0;
     public int roundNum = 0;
     public int prevRoundNum = -1;
@@ -84,11 +84,16 @@ public class BattleScreen implements Screen{
 
     public void startBattle(Entity enemy) {
         gp.ui.startFadeIn();
+        if(!gp.ui.fading){
+            gp.stopMusic();
+        }
+        gp.playMusic(8);
+        gp.sound.setVolume(-20f);
         battleFinished = false;
         gp.gameState = gp.battleState;
         currentTurn = 0;
         buffer = 0;
-        commandNum = 0;
+        battleCommandNum = 0;
         loadImages();
         currentEnemy = enemy;
         battleQueue.clear();
@@ -217,12 +222,12 @@ public class BattleScreen implements Screen{
 
     public void attack() {
         isAttacking = true;
-        commandNum = 0;
+        battleCommandNum = 0;
     }
 
     public void skill(){
         isChoosingSkill = true;
-        commandNum = 0;
+        battleCommandNum = 0;
     }
 
     public void drawPartyMembers(Graphics2D g2) {
@@ -296,28 +301,28 @@ public class BattleScreen implements Screen{
                         int tempX = x - (gp.tileSize*2+gp.tileSize/2)+5;
                         int tempY = y + 15;
                         drawOption("ATTACK", tempX, tempY, 0);
-                        if(commandNum == 0){
+                        if(battleCommandNum == 0){
                             gp.ui.addDescription("Use Basic Attack\n \n Attack enemy with a basic attack.");
                         }
                         tempX += 3;
                         tempY += gp.tileSize/2;
 
                         drawOption("SKILL", tempX, tempY, 1);
-                        if(commandNum == 1){
+                        if(battleCommandNum == 1){
                             gp.ui.addDescription("Use Skills\n \n Use skills. Will consume energy.");
                         }
                         tempX += 3;
                         tempY += gp.tileSize/2;
 
                         drawOption("ITEM", tempX, tempY, 2);
-                        if(commandNum == 2){
+                        if(battleCommandNum == 2){
                             gp.ui.addDescription("Use Items\n \n Use items available in your inventory.");
                         }
                         tempX += 3;
                         tempY += gp.tileSize/2;
 
                         drawOption("FLEE", tempX, tempY, 3);
-                        if(commandNum == 3){
+                        if(battleCommandNum == 3){
                             gp.ui.addDescription("Run Away\n \n Attempt to escape from the battle.");
                         }
                     }
@@ -335,7 +340,7 @@ public class BattleScreen implements Screen{
                             switch(selectableAllies.size()-1){
                                 case 0:{
                                     drawOption(selectableAllies.get(0).getName(), tempX, tempY, 0);
-                                    if(commandNum == 0){
+                                    if(battleCommandNum == 0){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(0).getName());
                                     }
 
@@ -343,14 +348,14 @@ public class BattleScreen implements Screen{
                                 }
                                 case 1:{
                                     drawOption(selectableAllies.get(0).getName(), tempX, tempY, 0);
-                                    if(commandNum == 0){
+                                    if(battleCommandNum == 0){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(0).getName());
                                     }
                                     tempX += 3;
                                     tempY += gp.tileSize/2;
 
                                     drawOption(selectableAllies.get(1).getName(), tempX, tempY, 1);
-                                    if(commandNum == 1){
+                                    if(battleCommandNum == 1){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(1).getName());
                                     }
 
@@ -358,20 +363,20 @@ public class BattleScreen implements Screen{
                                 }
                                 case 2:{
                                     drawOption(selectableAllies.get(0).getName(), tempX, tempY, 0);
-                                    if(commandNum == 0){
+                                    if(battleCommandNum == 0){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(0).getName());
                                     }
                                     tempX += 3;
                                     tempY += gp.tileSize/2;
 
                                     drawOption(selectableAllies.get(1).getName(), tempX, tempY, 1);
-                                    if(commandNum == 1){
+                                    if(battleCommandNum == 1){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(1).getName());
                                     }
                                     tempX += 3;
                                     tempY += gp.tileSize/2;
                                     drawOption(selectableAllies.get(2).getName(), tempX, tempY, 2);
-                                    if(commandNum == 2){
+                                    if(battleCommandNum == 2){
                                         gp.ui.addDescription("Use skill on " + selectableAllies.get(2).getName());
                                     }
                                     break;
@@ -380,21 +385,21 @@ public class BattleScreen implements Screen{
                         }
                         else{
                             drawOption("Skill 1", tempX, tempY, 0);
-                            if(commandNum == 0){
+                            if(battleCommandNum == 0){
                                 gp.ui.addDescription(entity.skills.get(0).toString() );
                             }
                             tempX += 3;
                             tempY += gp.tileSize/2;
 
                             drawOption("Skill 2", tempX, tempY, 1);
-                            if(commandNum == 1){
+                            if(battleCommandNum == 1){
                                 gp.ui.addDescription(entity.skills.get(1).toString() );
                             }
                             tempX += 3;
                             tempY += gp.tileSize/2;
 
                             drawOption("Ultimate", tempX, tempY, 2);
-                            if(commandNum == 2){
+                            if(battleCommandNum == 2){
                                 gp.ui.addDescription(entity.skills.get(2).toString() );
                             }
                         }
@@ -404,14 +409,14 @@ public class BattleScreen implements Screen{
                         int tempX = x - (gp.tileSize*2+gp.tileSize/2)+5;
                         int tempY = y + 10;
                         drawOption("HEAD", tempX, tempY, 0);
-                        if(commandNum == 0){
+                        if(battleCommandNum == 0){
                             gp.ui.addDescription("Attack Head\n \n Low hit chance (40% + Luck Factor)\n Deals 2-3 times damage if successful.");
                         }
                         tempX += 3;
                         tempY += gp.tileSize/2;
 
                         drawOption("TORSO", tempX, tempY, 1);
-                        if(commandNum == 1) {
+                        if(battleCommandNum == 1) {
                             gp.ui.addDescription("Attack Torso\n \n High hit chance\n Deals normal damage.");
                         }
                     }
@@ -600,7 +605,7 @@ public class BattleScreen implements Screen{
                 isPickingAlly = false;
                 isChoosingSkill = false;
                 isAttacking = false;
-                commandNum = 0;
+                battleCommandNum = 0;
                 break;
             }
             case "BUFF_ALLY":{
@@ -619,7 +624,7 @@ public class BattleScreen implements Screen{
                 isPickingAlly = false;
                 isChoosingSkill = false;
                 isAttacking = false;
-                commandNum = 0;
+                battleCommandNum = 0;
                 break;
             }
         }
@@ -661,7 +666,7 @@ public class BattleScreen implements Screen{
         isAttacking = false;
         isChoosingSkill = false;
         currentTurnFinished = true;
-        commandNum = 0;
+        battleCommandNum = 0;
     }
 
     public void enemyAttack(Entity target) {
@@ -710,7 +715,7 @@ public class BattleScreen implements Screen{
     }
 
     public void endBattle(){
-        double expGain = currentEnemy.nextLevelExp/3;
+        double expGain = currentEnemy.nextLevelExp;
 
 
         battleFinished = true;
@@ -796,7 +801,7 @@ public class BattleScreen implements Screen{
         g2.setColor(new Color(0, 0, 0));
         g2.drawString(option, x, y);
 
-        if(this.commandNum == commandNum){
+        if(this.battleCommandNum == commandNum){
             g2.setColor(new Color(255, 0, 0));
             g2.drawString(option, x, y);
         }
